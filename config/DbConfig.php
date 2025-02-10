@@ -42,3 +42,4 @@ class DbConfig
         return $this->connection;
     }
 }
+?>

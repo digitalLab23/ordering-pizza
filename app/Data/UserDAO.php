@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
+namespace app\Data;
 
-require_once __DIR__ . '/../../config/DbConfig.php';
-require_once __DIR__ . '/../Models/User.php';
+use app\Config\DbConfig;
+use app\Models\User;
+use PDO;
 
 class UserDAO
 {

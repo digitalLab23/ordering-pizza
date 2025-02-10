@@ -1,7 +1,7 @@
 <?php
 // app/Models/User.php
 
-namespace App\Models;
+namespace app\Models;
 
 class User
 {

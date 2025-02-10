@@ -1,6 +1,7 @@
 <?php
 
-require_once __DIR__ . '/UserDAO.php';
+namespace app\Data;
+use app\Data\UserDAO;
 
 $userDAO = new UserDAO();
 
@@ -37,6 +38,4 @@ if ($success) {
 } else {
     echo "Registration Failed.\n";
 }
-
-
 ?>
