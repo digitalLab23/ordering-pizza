@@ -1,7 +1,7 @@
 <?php
 // app/Models/User.php
 
-namespace app\Models;
+namespace App\Models;
 
 class User
 {
@@ -103,3 +103,4 @@ class User
         return $this->createdAt;
     }
 }
+?>

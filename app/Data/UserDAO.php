@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use app\Models\User;
+use App\Models\User;
 
 require_once __DIR__ . '/../../config/DbConfig.php';
 require_once __DIR__ . '/../Models/User.php';
@@ -44,16 +44,63 @@ class UserDAO
         return null;
     }
 
-    public function createUser(string $firstName, string $lastName, string $email, string $passwordHash): bool
-    {
-        $sql = "INSERT INTO Users (FirstName, LastName, Email, PasswordHash) 
-                VALUES (:firstName, :lastName, :email, :passwordHash)";
+    public function createUser(
+        string $firstName,
+        string $lastName,
+        string $street,
+        string $houseNumber,
+        string $postalCode,
+        string $city,
+        ?string $phoneNumber = null,         // optional fields can be null
+        string $email,
+        string $passwordHash,
+        int $promotionEligible = 0,
+        ?string $remarks = null,
+        ?string $lastLoginEmail = null
+    ): bool {
+        $sql = "INSERT INTO Users (
+                    FirstName,
+                    LastName,
+                    Street,
+                    HouseNumber,
+                    PostalCode,
+                    City,
+                    PhoneNumber,
+                    Email,
+                    PasswordHash,
+                    PromotionEligible,
+                    Remarks,
+                    LastLoginEmail
+                )
+                VALUES (
+                    :firstName,
+                    :lastName,
+                    :street,
+                    :houseNumber,
+                    :postalCode,
+                    :city,
+                    :phoneNumber,
+                    :email,
+                    :passwordHash,
+                    :promotionEligible,
+                    :remarks,
+                    :lastLoginEmail
+                )";
+    
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'passwordHash' => $passwordHash
+            'firstName'        => $firstName,
+            'lastName'         => $lastName,
+            'street'           => $street,
+            'houseNumber'      => $houseNumber,
+            'postalCode'       => $postalCode,
+            'city'             => $city,
+            'phoneNumber'      => $phoneNumber,
+            'email'            => $email,
+            'passwordHash'     => $passwordHash,
+            'promotionEligible'=> $promotionEligible,
+            'remarks'          => $remarks,
+            'lastLoginEmail'   => $lastLoginEmail
         ]);
     }
 }
