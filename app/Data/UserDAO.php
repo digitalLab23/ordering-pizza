@@ -104,5 +104,88 @@ class UserDAO
             'lastLoginEmail'   => $lastLoginEmail
         ]);
     }
+
+        //Fetch all users from the database
+    public function findAll(): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM users");
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($result as $row) {
+            $users[] = new User(
+                $row['id'],
+                $row['first_name'],
+                $row['last_name'],
+                $row['email'],
+                $row['password']  // Adjust fields as needed
+            );
+        }
+        return $users;
+    }
+
+        //Fetch a user by their ID
+    public function findById(int $userId): ?User
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return new User(
+                $result['id'],
+                $result['first_name'],
+                $result['last_name'],
+                $result['email'],
+                $result['password']  // Adjust fields based on your User model
+            );
+        }
+
+        return null; // Return null if no user is found
+    }
+
+        //Update an existing user in the database.
+    public function update(User $user): bool
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users
+            SET 
+                first_name = :first_name,
+                last_name = :last_name,
+                street = :street,
+                house_number = :house_number,
+                postal_code = :postal_code,
+                city = :city,
+                phone_number = :phone_number,
+                email = :email,
+                password = :password,
+                promotion_eligible = :promotion_eligible
+            WHERE id = :id
+        ");
+
+        return $stmt->execute([
+            ':first_name'        => $user->getFirstName(),
+            ':last_name'         => $user->getLastName(),
+            ':street'            => $user->getStreet(),
+            ':house_number'      => $user->getHouseNumber(),
+            ':postal_code'       => $user->getPostalCode(),
+            ':city'              => $user->getCity(),
+            ':phone_number'      => $user->getPhoneNumber(),
+            ':email'             => $user->getEmail(),
+            ':password'            => $user->getPasswordHash(),
+            ':promotion_eligible' => $user->isPromotionEligible(),
+            ':id'                => $user->getId()
+        ]);
+    }
+
+        //Delete a user by their ID
+    public function delete(int $userId): bool
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = :id");
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
 ?>

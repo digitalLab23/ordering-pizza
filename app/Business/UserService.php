@@ -22,8 +22,13 @@ class UserService
      */
     public function getAllUsers(): array
     {
-        // 2. Delegates actual DB query to UserDAO
-        return $this->userDAO->findAll();
+        try {
+            $users = $this->userDAO->findAll();
+            return is_array($users) ? $users : [];
+        } catch (\Exception $e) {
+            // Log the error if needed
+            return [];
+        }
     }
 
     /**
