@@ -3,8 +3,8 @@
 
 namespace App\Business;
 
-use App\Data\UserDAO;
-use App\Models\User;
+use app\Data\UserDAO;
+use app\Models\User;
 
 class UserService
 {

@@ -1,11 +1,11 @@
 <?php
+
 // app/Controllers/UserController.php
 
 namespace app\Controllers;
 
 use app\Business\UserService;
 use app\Data\UserDAO;
-use app\Models\User;
 
 class UserController
 {
@@ -109,6 +109,5 @@ class UserController
             require_once __DIR__ . '/../views/User/login.php';
         }
     }
-    
 }
 ?>

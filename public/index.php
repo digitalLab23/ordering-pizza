@@ -7,6 +7,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use app\Controllers\HomeController;
 use app\Controllers\ProductController;
+use app\Controllers\UserController;
 
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $baseUri = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
@@ -22,6 +23,11 @@ switch ($route) {
     case 'menu':
         $controller = new ProductController();
         $controller->index();
+        break;
+    
+    case 'User/register':
+        $controller = new UserController();
+        $controller->register();
         break;
 
     default:
