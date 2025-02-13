@@ -19,7 +19,7 @@
         <p style="color: red;"><?php echo htmlspecialchars($_GET['error']); ?></p>
     <?php endif; ?>
 
-    <form action="/User/register" method="POST">
+    <form action="" method="POST">
         <label for="first_name">First Name (required):</label>
         <input type="text" id="first_name" name="first_name" required>
 

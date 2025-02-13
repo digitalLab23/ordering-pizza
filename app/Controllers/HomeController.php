@@ -15,3 +15,4 @@ class HomeController
         require __DIR__ . '/../views/Product/menu.php';
     }
 }
+?>

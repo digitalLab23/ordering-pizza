@@ -35,3 +35,4 @@ class ProductController
         require __DIR__ . '/../views/Product/details.php';
     }
 }
+?>

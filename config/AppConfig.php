@@ -1,7 +1,7 @@
 <?php
-// app/AppConfig.php
+// config/AppConfig.php
 
-namespace app;
+namespace Config;
 
 class AppConfig
 {

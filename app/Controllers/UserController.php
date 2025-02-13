@@ -4,7 +4,6 @@
 
 namespace app\Controllers;
 
-use app\Business\UserService;
 use app\Data\UserDAO;
 
 class UserController

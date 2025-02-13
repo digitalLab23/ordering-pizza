@@ -55,3 +55,4 @@ class OrderController
         require __DIR__ . '/../views/Order/checkout.php';
     }
 }
+?>

@@ -1,7 +1,7 @@
 <?php
-// app/config/DbConfig.php
+// config/DbConfig.php
 
-namespace app\Config;
+namespace Config;
 
 use PDO;
 use PDOException;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\Data;
 
-use app\Config\DbConfig;
+use Config\DbConfig;
 use app\Models\User;
 use PDO;
 
@@ -34,9 +34,9 @@ class UserDAO
                 'HouseNumber' => $userData['HouseNumber'] ?? '',
                 'PostalCode' => $userData['PostalCode'] ?? '',
                 'City' => $userData['City'] ?? '',
-                'PhoneNumber' => $userData['PhoneNumber'] ?? null,
                 'Email' => $userData['Email'] ?? '',
                 'PasswordHash' => $userData['PasswordHash'] ?? '',
+                'PhoneNumber' => $userData['PhoneNumber'] ?? null,
                 'PromotionEligible' => $userData['PromotionEligible'] ?? false,
                 'Remarks' => $userData['Remarks'] ?? null,
                 'CreatedAt' => $userData['CreatedAt'] ?? date('Y-m-d H:i:s')
@@ -52,9 +52,9 @@ class UserDAO
         string $houseNumber,
         string $postalCode,
         string $city,
-        ?string $phoneNumber = null,         // optional fields can be null
         string $email,
         string $passwordHash,
+        ?string $phoneNumber = null,
         int $promotionEligible = 0,
         ?string $remarks = null,
         ?string $lastLoginEmail = null
@@ -66,9 +66,9 @@ class UserDAO
                     HouseNumber,
                     PostalCode,
                     City,
-                    PhoneNumber,
                     Email,
                     PasswordHash,
+                    PhoneNumber,
                     PromotionEligible,
                     Remarks,
                     LastLoginEmail
@@ -80,9 +80,9 @@ class UserDAO
                     :houseNumber,
                     :postalCode,
                     :city,
-                    :phoneNumber,
                     :email,
                     :passwordHash,
+                    :phoneNumber,
                     :promotionEligible,
                     :remarks,
                     :lastLoginEmail
@@ -96,9 +96,9 @@ class UserDAO
             'houseNumber'      => $houseNumber,
             'postalCode'       => $postalCode,
             'city'             => $city,
-            'phoneNumber'      => $phoneNumber,
             'email'            => $email,
             'passwordHash'     => $passwordHash,
+            'phoneNumber'      => $phoneNumber,
             'promotionEligible'=> $promotionEligible,
             'remarks'          => $remarks,
             'lastLoginEmail'   => $lastLoginEmail
