@@ -1,7 +1,7 @@
 RewriteEngine On
-RewriteBase /PHP Advanced/PIZZERIA/Untitled/ordering-pizza/
+RewriteBase /ordering-pizza/
 
-# If the request is not pointing to an existing file or directory, rewrite to index.php
+# Als het geen bestaand bestand of map is, stuur het door naar index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]

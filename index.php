@@ -24,6 +24,7 @@ $route = str_replace($baseUri, '', $requestUri);
 $route = trim($route, '/');
 
 // Routing
+
 switch ($route) {
     case '':
     case 'home':
