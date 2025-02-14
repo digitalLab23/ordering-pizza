@@ -14,7 +14,7 @@
     </div>
 <?php endif; ?>
 
-<form action="/User/login" method="POST">
+<form action="/ordering-pizza/user/login" method="POST">
     <label for="email">Email:</label>
     <input 
         type="email" 
@@ -38,7 +38,7 @@
 
 <p>
     Don’t have an account?
-    <a href="/User/register">Register here</a>
+    <a href="/ordering-pizza/user/register">Register here</a>
 </p>
 
 </body>
