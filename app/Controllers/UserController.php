@@ -14,7 +14,6 @@ class UserController
 
     public function __construct()
     {
-        // Adjust this to however you normally get your DAO or DB connection
         $this->userDAO = new UserDAO();
     }
 

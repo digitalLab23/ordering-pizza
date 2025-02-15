@@ -139,7 +139,7 @@ class UserDAO
                 $result['first_name'],
                 $result['last_name'],
                 $result['email'],
-                $result['password']  // Adjust fields based on your User model
+                $result['password']
             );
         }
 
