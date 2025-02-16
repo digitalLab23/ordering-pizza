@@ -5,7 +5,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/ordering-pizza/public/css/style.css">
     <title>Cart</title>
 </head>
 <h1>Winkelmandje</h1>
@@ -26,13 +26,13 @@
                 <td><?= $quantity ?></td>
                 <td>€ <?= number_format(10.00 * $quantity, 2) ?> <!-- Placeholder prijs van €10.00 per item --></td>
                 <td>
-                    <a href="/cart/remove/<?= $productId ?>">Verwijder</a>
+                    <a href="remove/<?= $productId ?>">Verwijder</a>
                 </td>
             </tr>
         <?php endforeach; ?>
     </table>
     <p><strong>Totaalprijs: € <?= number_format(\App\Helpers\PriceCalculator::calculateTotal($cart), 2) ?></strong></p>
-    <a href="/checkout">Ga naar afrekenen</a>
+    <a href="checkout">Ga naar afrekenen</a>
 <?php endif; ?>
 
-<a href="/menu">Verder winkelen</a>
+<a href="menu" class="button">Verder winkelen</a>

@@ -20,7 +20,7 @@ class OrderController
     public function cart(): void
     {
         $cart = $_SESSION['cart'] ?? [];
-        require __DIR__ . '/../views/Order/cart.php';
+        require __DIR__ . '/../../views/Order/cart.php';
     }
 
     // Product toevoegen aan winkelmandje

@@ -188,6 +188,17 @@ select {
   border-radius: 5px;
 }
 
+.success-message {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  border: 1px solid #c3e6cb !important;
+  padding: 10px !important;
+  margin: 10px 0 !important;
+  border-radius: 5px !important;
+  font-weight: bold !important;
+  display: block !important;
+}
+
 .auth-container fieldset {
   border: none;
   padding: 10px;
@@ -204,7 +215,7 @@ select {
   display: block;
   margin-top: 20px;
   text-align: center;
-  background:  #acacac1a;
+  background: #acacac1a;
   padding: 10px 20px;
   border-radius: 8px;
   color: var(--primary-color);
@@ -217,19 +228,19 @@ select {
   color: var(--primary-color);
 }
 
-.order-button{
+.order-button {
   display: block;
   margin-top: 20px;
   text-align: center;
-  background:  #acacac1a;
+  background: #acacac1a;
   padding: 10px 20px;
   border-radius: 8px;
   color: var(--primary-color);
   font-size: 1rem;
-  transition: background 0.3s ease; 
+  transition: background 0.3s ease;
 }
 
-.order-button:hover{
+.order-button:hover {
   background-color: var(--primary-color);
   color: white;
   border-radius: 8px;

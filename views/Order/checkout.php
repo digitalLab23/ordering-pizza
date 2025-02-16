@@ -5,7 +5,7 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/ordering-pizza/public/css/style.css">
     <title>checkout</title>
 </head>
 <h1>Afrekenen</h1>

@@ -25,7 +25,6 @@ $route = str_replace($baseUri, '', $requestUri);
 $route = trim($route, '/');
 
 // Routing
-
 switch ($route) {
     case '':
     case 'home':
@@ -58,8 +57,12 @@ switch ($route) {
         $controller->register();
         break;
 
+    case 'user/logout':
+        $controller = new UserController();
+        $controller->logout();
+        break;
+
     default:
-        // 404-pagina
         http_response_code(404);
         echo "<h1>404 - Pagina niet gevonden</h1>";
         break;

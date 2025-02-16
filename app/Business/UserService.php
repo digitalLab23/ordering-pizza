@@ -12,17 +12,14 @@ class UserService
 
     public function __construct()
     {
-        // 1. Instantiate the DAO
         $this->userDAO = new UserDAO();
     }
 
     public function getAllUsers(): array
     {
         try {
-            $users = $this->userDAO->findAll();
-            return is_array($users) ? $users : [];
+            return $this->userDAO->findAll() ?? [];
         } catch (\Exception $e) {
-            // Log the error if needed
             return [];
         }
     }
@@ -30,6 +27,11 @@ class UserService
     public function getUserById(int $userId): ?User
     {
         return $this->userDAO->findById($userId);
+    }
+
+    public function getUserByEmail(string $email): ?User
+    {
+        return $this->userDAO->findByEmail($email);
     }
 
     public function createUser(
@@ -43,12 +45,11 @@ class UserService
         string $email,
         string $passwordHash,
         int $promotionEligible = 0
-
     ): bool {
-        // Add business logic validations here
-        // (e.g., check if email already exists).
-        
-        // Then delegate to DAO
+        if ($this->userDAO->emailExists($email)) {
+            return false; 
+        }
+
         return $this->userDAO->createUser(
             $firstName,
             $lastName,
@@ -65,7 +66,6 @@ class UserService
 
     public function updateUser(User $user): bool
     {
-        // Potentially some business logic (e.g., checking constraints)
         return $this->userDAO->update($user);
     }
 

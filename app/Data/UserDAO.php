@@ -1,6 +1,5 @@
 <?php
-
-declare(strict_types=1);
+// app/Data/UserDAO.php
 
 namespace app\Data;
 
@@ -10,39 +9,11 @@ use PDO;
 
 class UserDAO
 {
-    private PDO $pdo;
+    private PDO $connection;
 
     public function __construct()
     {
-        $db = DbConfig::getInstance();
-        $this->pdo = $db->getConnection();
-    }
-
-    public function findByEmail(string $email): ?User
-    {
-        $sql = "SELECT * FROM Users WHERE Email = :email LIMIT 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['email' => $email]);
-        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($userData) {
-            return new User([
-                'UserID' => $userData['UserID'] ?? 0,
-                'FirstName' => $userData['FirstName'] ?? '',
-                'LastName' => $userData['LastName'] ?? '',
-                'Street' => $userData['Street'] ?? '',
-                'HouseNumber' => $userData['HouseNumber'] ?? '',
-                'PostalCode' => $userData['PostalCode'] ?? '',
-                'City' => $userData['City'] ?? '',
-                'Email' => $userData['Email'] ?? '',
-                'PasswordHash' => $userData['PasswordHash'] ?? '',
-                'PhoneNumber' => $userData['PhoneNumber'] ?? null,
-                'PromotionEligible' => $userData['PromotionEligible'] ?? false,
-                'Remarks' => $userData['Remarks'] ?? null,
-                'CreatedAt' => $userData['CreatedAt'] ?? date('Y-m-d H:i:s')
-            ]);
-        }
-        return null;
+        $this->connection = DbConfig::getInstance()->getConnection();
     }
 
     public function createUser(
@@ -52,140 +23,43 @@ class UserDAO
         string $houseNumber,
         string $postalCode,
         string $city,
+        ?string $phoneNumber,
         string $email,
         string $passwordHash,
-        ?string $phoneNumber = null,
-        int $promotionEligible = 0,
-        ?string $remarks = null,
-        ?string $lastLoginEmail = null
+        int $promotionEligible = 0
     ): bool {
-        $sql = "INSERT INTO Users (
-                    FirstName,
-                    LastName,
-                    Street,
-                    HouseNumber,
-                    PostalCode,
-                    City,
-                    Email,
-                    PasswordHash,
-                    PhoneNumber,
-                    PromotionEligible,
-                    Remarks,
-                    LastLoginEmail
-                )
-                VALUES (
-                    :firstName,
-                    :lastName,
-                    :street,
-                    :houseNumber,
-                    :postalCode,
-                    :city,
-                    :email,
-                    :passwordHash,
-                    :phoneNumber,
-                    :promotionEligible,
-                    :remarks,
-                    :lastLoginEmail
-                )";
-    
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            'firstName'        => $firstName,
-            'lastName'         => $lastName,
-            'street'           => $street,
-            'houseNumber'      => $houseNumber,
-            'postalCode'       => $postalCode,
-            'city'             => $city,
-            'email'            => $email,
-            'passwordHash'     => $passwordHash,
-            'phoneNumber'      => $phoneNumber,
-            'promotionEligible'=> $promotionEligible,
-            'remarks'          => $remarks,
-            'lastLoginEmail'   => $lastLoginEmail
+        $query = "INSERT INTO Users (FirstName, LastName, Street, HouseNumber, PostalCode, City, PhoneNumber, Email, PasswordHash, PromotionEligible)
+                  VALUES (:firstName, :lastName, :street, :houseNumber, :postalCode, :city, :phoneNumber, :email, :passwordHash, :promotionEligible)";
+        $statement = $this->connection->prepare($query);
+
+        return $statement->execute([
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'street' => $street,
+            'houseNumber' => $houseNumber,
+            'postalCode' => $postalCode,
+            'city' => $city,
+            'phoneNumber' => $phoneNumber,
+            'email' => $email,
+            'passwordHash' => $passwordHash,
+            'promotionEligible' => $promotionEligible
         ]);
     }
 
-        //Fetch all users from the database
-    public function findAll(): array
+    public function findByEmail(string $email): ?User
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users");
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $query = "SELECT * FROM Users WHERE Email = :email";
+        $statement = $this->connection->prepare($query);
+        $statement->execute(['email' => $email]);
+        $result = $statement->fetch();
 
-        $users = [];
-        foreach ($result as $row) {
-            $users[] = new User(
-                $row['id'],
-                $row['first_name'],
-                $row['last_name'],
-                $row['email'],
-                $row['password']  // Adjust fields as needed
-            );
-        }
-        return $users;
+        return $result ? new User($result) : null;
     }
-
-        //Fetch a user by their ID
-    public function findById(int $userId): ?User
+    public function emailExists(string $email): bool
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
-        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            return new User(
-                $result['id'],
-                $result['first_name'],
-                $result['last_name'],
-                $result['email'],
-                $result['password']
-            );
-        }
-
-        return null; // Return null if no user is found
-    }
-
-        //Update an existing user in the database.
-    public function update(User $user): bool
-    {
-        $stmt = $this->pdo->prepare("
-            UPDATE users
-            SET 
-                first_name = :first_name,
-                last_name = :last_name,
-                street = :street,
-                house_number = :house_number,
-                postal_code = :postal_code,
-                city = :city,
-                phone_number = :phone_number,
-                email = :email,
-                password = :password,
-                promotion_eligible = :promotion_eligible
-            WHERE id = :id
-        ");
-
-        return $stmt->execute([
-            ':first_name'        => $user->getFirstName(),
-            ':last_name'         => $user->getLastName(),
-            ':street'            => $user->getStreet(),
-            ':house_number'      => $user->getHouseNumber(),
-            ':postal_code'       => $user->getPostalCode(),
-            ':city'              => $user->getCity(),
-            ':phone_number'      => $user->getPhoneNumber(),
-            ':email'             => $user->getEmail(),
-            ':password'            => $user->getPasswordHash(),
-            ':promotion_eligible' => $user->isPromotionEligible(),
-            ':id'                => $user->getId()
-        ]);
-    }
-
-        //Delete a user by their ID
-    public function delete(int $userId): bool
-    {
-        $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = :id");
-        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
-        return $stmt->execute();
+        $query = "SELECT COUNT(*) FROM Users WHERE Email = :email";
+        $statement = $this->connection->prepare($query);
+        $statement->execute(['email' => $email]);
+        return $statement->fetchColumn() > 0;
     }
 }
-?>
