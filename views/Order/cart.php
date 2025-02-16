@@ -1,7 +1,13 @@
 <?php
 // views/Order/cart.php
 ?>
-
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <title>Cart</title>
+</head>
 <h1>Winkelmandje</h1>
 
 <?php if (empty($cart)): ?>

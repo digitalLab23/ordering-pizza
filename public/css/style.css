@@ -1,0 +1,241 @@
+/* Algemene stijlen */
+:root {
+  --primary-color: #e63946;
+  --secondary-color: #d62828;
+  --background-color: #f8f9fa;
+  --text-color: #333;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  text-shadow: 2px 2px 8px var(--shadow-light);
+}
+
+p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--secondary-color);
+}
+
+button,
+.button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  box-shadow: 0px 4px 6px var(--shadow-dark);
+  display: inline-block;
+  margin-top: 10px;
+}
+
+button:hover,
+.button:hover {
+  background-color: var(--secondary-color);
+  box-shadow: 0px 6px 10px var(--shadow-dark);
+  color: white;
+}
+
+/* Containers */
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+/* Homepagina */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Tabel styling */
+table {
+  width: 80%;
+  margin: auto;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0px 4px 6px var(--shadow-light);
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 12px;
+}
+
+th {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Formulier styling */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px var(--shadow-light);
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Menu grid */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.menu-item {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px var(--shadow-light);
+  transition: transform 0.2s ease-in-out;
+}
+
+.menu-item:hover {
+  transform: scale(1.05);
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: var(--text-color);
+  display: block;
+}
+
+.menu-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.menu-item .price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Authenticatie container */
+.auth-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0px 4px 6px var(--shadow-light);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.auth-container h2 {
+  color: var(--primary-color);
+}
+
+.error-message {
+  background: #ffcccc;
+  color: var(--secondary-color);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.auth-container fieldset {
+  border: none;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.auth-container legend {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.back-home {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  background:  #acacac1a;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.back-home:hover {
+  background: #f8f9fa;
+  color: var(--primary-color);
+}
+
+.order-button{
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  background:  #acacac1a;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-size: 1rem;
+  transition: background 0.3s ease; 
+}
+
+.order-button:hover{
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+  box-shadow: 0px 4px 6px var(--shadow-dark);
+}

@@ -1,7 +1,13 @@
 <?php
 // views/Order/checkout.php
 ?>
-
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <title>checkout</title>
+</head>
 <h1>Afrekenen</h1>
 
 <form method="POST">

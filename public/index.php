@@ -24,7 +24,7 @@ switch ($route) {
         $controller = new ProductController();
         $controller->index();
         break;
-    
+
     case 'User/register':
         $controller = new UserController();
         $controller->register();

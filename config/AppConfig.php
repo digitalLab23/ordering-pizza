@@ -2,7 +2,6 @@
 // config/AppConfig.php
 
 namespace Config;
-
 class AppConfig
 {
     // Algemene configuratie

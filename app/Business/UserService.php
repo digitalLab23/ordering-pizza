@@ -1,7 +1,7 @@
 <?php
 // app/Business/UserService.php
 
-namespace App\Business;
+namespace app\Business;
 
 use app\Data\UserDAO;
 use app\Models\User;

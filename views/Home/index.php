@@ -1,16 +1,33 @@
 <?php
 // views/home/index.php
 ?>
+<!DOCTYPE html>
+<html lang="nl">
 
-<h1>welkom bij onze pizzeria!</h1>
-<p>bestel eenvoudig en snel je favoriete pizza online.</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<?= dirname($_SERVER['SCRIPT_NAME']) ?>/public/css/style.css">
+    <title>Home</title>
+</head>
 
-<a href="menu">bekijk ons menu</a>
-<a href="cart">bekijk je winkelmandje</a>
+<body>
 
+    <div class="home-container">
+        <h1>Welkom bij onze pizzeria!</h1>
+        <p>Bestel eenvoudig en snel je favoriete pizza online.</p>
 
-<!-- New links for Register and Login -->
-<p>
-    <a href="user/register">Registreren</a> | 
-    <a href="user/login">Inloggen</a>
-</p>
+        <nav>
+            <a class="button" href="menu">Bekijk ons menu</a>
+            <a class="button" href="cart">Bekijk je winkelmandje</a>
+        </nav>
+
+        <p>
+            <a href="user/register">Registreren</a> |
+            <a href="user/login">Inloggen</a>
+        </p>
+    </div>
+
+</body>
+
+</html>

@@ -14,6 +14,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Gebruik namespaces
 use config\AppConfig;
 use app\Controllers\HomeController;
+use app\Controllers\ProductController;
 use app\Controllers\OrderController;
 use app\Controllers\UserController;
 
@@ -33,8 +34,8 @@ switch ($route) {
         break;
 
     case 'menu':
-        $controller = new HomeController();
-        $controller->menu();
+        $controller = new ProductController();
+        $controller->index();
         break;
 
     case 'cart':

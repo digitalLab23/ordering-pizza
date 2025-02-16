@@ -22,7 +22,7 @@ class ProductDAO
         $statement = $this->connection->query($query);
         $products = [];
 
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $products[] = new Product($row);
         }
 
@@ -34,7 +34,7 @@ class ProductDAO
         $query = "SELECT * FROM Products WHERE ProductID = :id";
         $statement = $this->connection->prepare($query);
         $statement->execute(['id' => $id]);
-        $result = $statement->fetch();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         return $result ? new Product($result) : null;
     }

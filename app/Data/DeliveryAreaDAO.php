@@ -3,7 +3,7 @@
 
 namespace app\Data;
 
-use app\Config\DbConfig;
+use config\DbConfig;
 use app\Models\DeliveryArea;
 use PDO;
 

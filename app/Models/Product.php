@@ -19,8 +19,8 @@ class Product
         $this->name = $data['ProductName'];
         $this->price = $data['Price'];
         $this->composition = $data['Composition'] ?? null;
-        $this->isAvailable = $data['IsAvailable'] ?? true;
+        $this->isAvailable = (bool)($data['IsAvailable'] ?? true);
         $this->promotionPrice = $data['PromotionPrice'] ?? null;
-        $this->createdAt = $data['CreatedAt'];
+        $this->createdAt = $data['CreatedAt'] ?? date('Y-m-d H:i:s');
     }
 }
