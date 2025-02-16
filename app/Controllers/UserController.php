@@ -22,6 +22,11 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $firstName = trim($_POST['first_name'] ?? '');
             $lastName = trim($_POST['last_name'] ?? '');
+            $street = trim($_POST['street'] ?? '');
+            $houseNumber = trim($_POST['house_number'] ?? '');
+            $postalCode = trim($_POST['postal_code'] ?? '');
+            $city = trim($_POST['city'] ?? '');
+            $phoneNumber = trim($_POST['phone_number'] ?? '');
             $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
             $confirmPassword = $_POST['confirm_password'] ?? '';
@@ -36,11 +41,11 @@ class UserController
             $success = $this->userService->createUser(
                 $firstName,
                 $lastName,
-                '',
-                '',
-                '',
-                '',
-                '',
+                $street,
+                $houseNumber,
+                $postalCode,
+                $city,
+                $phoneNumber,
                 $email,
                 $passwordHash,
                 0
@@ -94,3 +99,4 @@ class UserController
         exit;
     }
 }
+?>
