@@ -93,19 +93,35 @@ class OrderController
             $cart = $_SESSION['cart'] ?? [];
             $cartTotal = $_SESSION['cart_total'] ?? 0;
 
-            $orderId = $this->orderService->placeOrder($name, $address, $postalCode, $city, $cart, $cartTotal);
-
-            if ($orderId) {
-                unset($_SESSION['cart'], $_SESSION['cart_total']);
-                $_SESSION['success'] = "Je bestelling is succesvol geplaatst!";
-                header("Location: /ordering-pizza/confirmation");
+            if (empty($cart)) {
+                $_SESSION['error'] = "Je winkelwagen is leeg.";
+                header("Location: /ordering-pizza/menu");
                 exit;
             }
 
-            error_log("Bestelling mislukt: geen order ID gegenereerd.");
-            $_SESSION['error'] = "Bestelling mislukt. Probeer opnieuw.";
-            header("Location: /ordering-pizza/checkout");
-            exit;
+            try {
+                $userId = $_SESSION['user_id'] ?? null;
+                $orderId = $this->orderService->placeOrder($userId, $address, $postalCode, $city, $cart, $cartTotal);
+
+                if ($orderId) {
+                    $_SESSION['order_id'] = $orderId;
+                    $_SESSION['order_total'] = $cartTotal;
+                    $_SESSION['order_items'] = $cart;
+                    $_SESSION['success'] = "Je bestelling is succesvol geplaatst!";
+
+                    header("Location: /ordering-pizza/confirmation");
+                    exit;
+                }
+
+                $_SESSION['error'] = "Bestelling mislukt. Probeer opnieuw.";
+                header("Location: /ordering-pizza/checkout");
+                exit;
+            } catch (Exception $e) {
+                error_log("Fout bij bestelling plaatsen: " . $e->getMessage());
+                $_SESSION['error'] = "Bestelling mislukt. Probeer opnieuw.";
+                header("Location: /ordering-pizza/checkout");
+                exit;
+            }
         } else {
             header("Location: /ordering-pizza/checkout");
             exit;

@@ -21,7 +21,7 @@ class OrderDetailDAO
     {
         try {
             $query = "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, Price)
-                  VALUES (:orderId, :productId, :quantity, :price)";
+                      VALUES (:orderId, :productId, :quantity, :price)";
             $statement = $this->connection->prepare($query);
             $statement->execute([
                 'orderId' => $orderId,
@@ -31,6 +31,19 @@ class OrderDetailDAO
             ]);
         } catch (Exception $e) {
             error_log("Fout bij toevoegen van orderdetail: " . $e->getMessage());
+        }
+    }
+
+    public function findByOrderId(int $orderId): array
+    {
+        try {
+            $query = "SELECT * FROM OrderDetails WHERE OrderID = :orderId";
+            $statement = $this->connection->prepare($query);
+            $statement->execute(['orderId' => $orderId]);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen orderdetails voor OrderID $orderId: " . $e->getMessage());
+            return [];
         }
     }
 }

@@ -37,29 +37,24 @@ class OrderDAO
         }
     }
 
-    public function createOrder(string $name, string $address, string $postalCode, string $city, float $totalPrice): ?int
+    public function createOrder(?int $userId, string $address, string $postalCode, string $city, float $totalPrice): ?int
     {
         try {
-            $query = "INSERT INTO Orders (CustomerName, Address, PostalCode, City, TotalPrice, OrderDate) 
-                      VALUES (:name, :address, :postalCode, :city, :totalPrice, NOW())";
+            $query = "INSERT INTO Orders (UserID, DeliveryAddress, DeliveryPostalCode, DeliveryCity, TotalPrice, OrderDate) 
+                      VALUES (:userId, :address, :postalCode, :city, :totalPrice, NOW())";
+
             $statement = $this->connection->prepare($query);
             $statement->execute([
-                'name' => $name,
+                'userId' => $userId,
                 'address' => $address,
                 'postalCode' => $postalCode,
                 'city' => $city,
                 'totalPrice' => $totalPrice
             ]);
 
-            $orderId = (int) $this->connection->lastInsertId();
-
-            if (!$orderId) {
-                throw new Exception("Order ID niet gegenereerd.");
-            }
-
-            return $orderId;
+            return (int) $this->connection->lastInsertId();
         } catch (Exception $e) {
-            error_log("Fout bij aanmaken bestelling: " . $e->getMessage());
+            error_log("Fout bij het aanmaken van bestelling: " . $e->getMessage());
             return null;
         }
     }

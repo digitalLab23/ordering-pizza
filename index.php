@@ -13,7 +13,6 @@ use app\Helpers\SessionManager;
 SessionManager::startSession();
 
 // Gebruik namespaces
-use app\Config\AppConfig;
 use app\Controllers\HomeController;
 use app\Controllers\ProductController;
 use app\Controllers\OrderController;
@@ -48,11 +47,6 @@ switch ($route) {
         $controller->addToCart();
         break;
 
-    case (preg_match('/^cart\/remove\/(\d+)$/', $route, $matches) ? true : false):
-        $controller = new OrderController();
-        $controller->removeFromCart((int) $matches[1]);
-        break;
-
     case 'checkout':
         $controller = new OrderController();
         $controller->checkout();
@@ -61,6 +55,10 @@ switch ($route) {
     case 'order/confirm':
         $controller = new OrderController();
         $controller->confirmOrder();
+        break;
+
+    case 'confirmation':
+        require __DIR__ . '/views/Order/confirmation.php';
         break;
 
     case 'user/login':
@@ -80,7 +78,6 @@ switch ($route) {
 
     default:
         http_response_code(404);
-        error_log("404: Route niet gevonden - " . $route);
         echo "<h1>404 - Pagina niet gevonden</h1>";
         break;
 }

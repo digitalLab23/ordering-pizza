@@ -56,7 +56,7 @@ unset($_SESSION['order_id'], $_SESSION['order_total'], $_SESSION['order_items'],
             <p><strong>Totaalbedrag: €<?= number_format($orderTotal, 2, ',', '.') ?></strong></p>
         <?php endif; ?>
 
-        <a href="/ordering-pizza/menu" class="button">Terug naar het menu</a>
+        <a href="/ordering-pizza/" class="button">Terug naar het startpagina</a>
     </div>
 
 </body>
