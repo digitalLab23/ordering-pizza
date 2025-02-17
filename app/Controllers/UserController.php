@@ -21,15 +21,24 @@ class UserController
     public function register()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $firstName = trim($_POST['first_name'] ?? '');
-            $lastName = trim($_POST['last_name'] ?? '');
-            $street = trim($_POST['street'] ?? '');
-            $houseNumber = trim($_POST['house_number'] ?? '');
-            $postalCode = trim($_POST['postal_code'] ?? '');
-            $city = trim($_POST['city'] ?? '');
-            $phoneNumber = trim($_POST['phone_number'] ?? '');
+            $firstName    = trim($_POST['first_name'] ?? '');
+            $lastName     = trim($_POST['last_name'] ?? '');
+            $street       = trim($_POST['street'] ?? '');
+            $houseNumber  = trim($_POST['house_number'] ?? '');
+            $postalCode   = trim($_POST['postal_code'] ?? '');
+            $city         = trim($_POST['city'] ?? '');
+            $phoneNumber  = trim($_POST['phone_number'] ?? '');
+            
+            // Retrieve, sanitize, and validate the email address
             $email = trim($_POST['email'] ?? '');
-            $password = $_POST['password'] ?? '';
+            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['error'] = "Ongeldig e-mailadres.";
+                header("Location: /ordering-pizza/user/register");
+                exit;
+            }
+            
+            $password        = $_POST['password'] ?? '';
             $confirmPassword = $_POST['confirm_password'] ?? '';
 
             $errors = Validator::validateRegistration($firstName, $lastName, $email, $password, $confirmPassword);
@@ -68,6 +77,7 @@ class UserController
         }
         require __DIR__ . '/../../views/User/register.php';
     }
+    
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
