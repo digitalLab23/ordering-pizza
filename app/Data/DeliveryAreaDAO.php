@@ -6,6 +6,7 @@ namespace app\Data;
 use Config\DbConfig;
 use app\Models\DeliveryArea;
 use PDO;
+use Exception;
 
 class DeliveryAreaDAO
 {
@@ -18,24 +19,28 @@ class DeliveryAreaDAO
 
     public function findByPostalCode(string $postalCode): ?DeliveryArea
     {
-        $query = "SELECT * FROM Delivery_Areas WHERE PostalCode = :postalCode";
-        $statement = $this->connection->prepare($query);
-        $statement->execute(['postalCode' => $postalCode]);
-        $result = $statement->fetch();
+        try {
+            $query = "SELECT * FROM Delivery_Areas WHERE PostalCode = :postalCode";
+            $statement = $this->connection->prepare($query);
+            $statement->execute(['postalCode' => $postalCode]);
+            $result = $statement->fetch();
 
-        return $result ? new DeliveryArea($result) : null;
+            return $result ? new DeliveryArea($result) : null;
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen bezorggebied: " . $e->getMessage());
+            return null;
+        }
     }
 
     public function findAll(): array
     {
-        $query = "SELECT * FROM Delivery_Areas";
-        $statement = $this->connection->query($query);
-        $areas = [];
-
-        while ($row = $statement->fetch()) {
-            $areas[] = new DeliveryArea($row);
+        try {
+            $query = "SELECT * FROM Delivery_Areas";
+            $statement = $this->connection->query($query);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen alle bezorggebieden: " . $e->getMessage());
+            return [];
         }
-
-        return $areas;
     }
 }

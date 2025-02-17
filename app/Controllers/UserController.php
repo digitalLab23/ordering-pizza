@@ -6,6 +6,7 @@ namespace app\Controllers;
 use app\Business\UserService;
 use app\Helpers\SessionManager;
 use app\Helpers\Validator;
+use Exception;
 
 class UserController
 {
@@ -31,44 +32,42 @@ class UserController
             $password = $_POST['password'] ?? '';
             $confirmPassword = $_POST['confirm_password'] ?? '';
 
-            if (!Validator::validateRegistration($firstName, $lastName, $email, $password, $confirmPassword)) {
-                $_SESSION['error'] = "Vul alle velden correct in en controleer je wachtwoord.";
+            $errors = Validator::validateRegistration($firstName, $lastName, $email, $password, $confirmPassword);
+            if (!empty($errors)) {
+                $_SESSION['error'] = implode(' ', $errors);
                 header("Location: /ordering-pizza/user/register");
                 exit;
             }
 
-            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $success = $this->userService->createUser(
-                $firstName,
-                $lastName,
-                $street,
-                $houseNumber,
-                $postalCode,
-                $city,
-                $phoneNumber,
-                $email,
-                $passwordHash,
-                0
-            );
+            try {
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+                $success = $this->userService->createUser(
+                    $firstName,
+                    $lastName,
+                    $street,
+                    $houseNumber,
+                    $postalCode,
+                    $city,
+                    $phoneNumber,
+                    $email,
+                    $passwordHash,
+                    0
+                );
 
-            if ($success) {
-                $user = $this->userService->getUserByEmail($email);
-                $_SESSION['user_id'] = $user->getId();
-                $_SESSION['success'] = "Welkom, " . htmlspecialchars($user->getFirstName()) . "!";
-
-                header("Location: /ordering-pizza/");
-                exit;
-            } else {
-                $_SESSION['error'] = "Registratie mislukt. E-mailadres is mogelijk al in gebruik.";
-                header("Location: /ordering-pizza/user/register");
+                if ($success) {
+                    $_SESSION['success'] = "Account succesvol aangemaakt!";
+                    header("Location: /ordering-pizza/user/login");
+                    exit;
+                }
+                throw new Exception("Registratie mislukt.");
+            } catch (Exception $e) {
+                error_log("Fout bij registratie: " . $e->getMessage());
+                header("Location: /ordering-pizza/user/register?error=Registratie+mislukt.");
                 exit;
             }
-        } else {
-            require __DIR__ . '/../../views/User/register.php';
         }
+        require __DIR__ . '/../../views/User/register.php';
     }
-
-
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -99,4 +98,3 @@ class UserController
         exit;
     }
 }
-?>

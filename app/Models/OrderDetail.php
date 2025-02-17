@@ -5,12 +5,12 @@ namespace app\Models;
 
 class OrderDetail
 {
-    public int $id;
-    public int $orderId;
-    public int $productId;
-    public int $quantity;
-    public float $price;
-    public ?string $remarks;
+    private int $id;
+    private int $orderId;
+    private int $productId;
+    private int $quantity;
+    private float $price;
+    private ?string $remarks;
 
     public function __construct(array $data)
     {
@@ -20,5 +20,35 @@ class OrderDetail
         $this->quantity = $data['Quantity'];
         $this->price = $data['Price'];
         $this->remarks = $data['Remarks'] ?? null;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getOrderId(): int
+    {
+        return $this->orderId;
+    }
+
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function getRemarks(): ?string
+    {
+        return $this->remarks;
     }
 }

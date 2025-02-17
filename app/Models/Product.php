@@ -5,13 +5,10 @@ namespace app\Models;
 
 class Product
 {
-    public int $id;
-    public string $name;
-    public float $price;
-    public ?string $composition;
-    public bool $isAvailable;
-    public ?float $promotionPrice;
-    public string $createdAt;
+    private int $id;
+    private string $name;
+    private float $price;
+    private ?string $composition;
 
     public function __construct(array $data)
     {
@@ -19,8 +16,22 @@ class Product
         $this->name = $data['ProductName'];
         $this->price = $data['Price'];
         $this->composition = $data['Composition'] ?? null;
-        $this->isAvailable = (bool)($data['IsAvailable'] ?? true);
-        $this->promotionPrice = $data['PromotionPrice'] ?? null;
-        $this->createdAt = $data['CreatedAt'] ?? date('Y-m-d H:i:s');
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+    public function getComposition(): ?string
+    {
+        return $this->composition;
     }
 }

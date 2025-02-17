@@ -5,6 +5,7 @@ namespace app\Business;
 
 use app\Data\UserDAO;
 use app\Models\User;
+use Exception;
 
 class UserService
 {
@@ -15,23 +16,14 @@ class UserService
         $this->userDAO = new UserDAO();
     }
 
-    public function getAllUsers(): array
-    {
-        try {
-            return $this->userDAO->findAll() ?? [];
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
-
-    public function getUserById(int $userId): ?User
-    {
-        return $this->userDAO->findById($userId);
-    }
-
     public function getUserByEmail(string $email): ?User
     {
         return $this->userDAO->findByEmail($email);
+    }
+
+    public function emailExists(string $email): bool
+    {
+        return $this->userDAO->emailExists($email);
     }
 
     public function createUser(
@@ -46,22 +38,28 @@ class UserService
         string $passwordHash,
         int $promotionEligible = 0
     ): bool {
-        if ($this->userDAO->emailExists($email)) {
-            return false; 
-        }
+        try {
+            if ($this->userDAO->emailExists($email)) {
+                error_log("E-mail $email bestaat al in de database.");
+                return false;
+            }
 
-        return $this->userDAO->createUser(
-            $firstName,
-            $lastName,
-            $street,
-            $houseNumber,
-            $postalCode,
-            $city,
-            $phoneNumber,
-            $email,
-            $passwordHash,
-            $promotionEligible
-        );
+            return $this->userDAO->createUser(
+                $firstName,
+                $lastName,
+                $street,
+                $houseNumber,
+                $postalCode,
+                $city,
+                $phoneNumber,
+                $email,
+                $passwordHash,
+                $promotionEligible
+            );
+        } catch (Exception $e) {
+            error_log("Fout bij aanmaken gebruiker $email: " . $e->getMessage());
+            return false;
+        }
     }
 
     public function updateUser(User $user): bool

@@ -4,7 +4,7 @@
 namespace app\Business;
 
 use app\Data\PromotionDAO;
-use app\Models\Promotion;
+use Exception;
 
 class PromotionService
 {
@@ -15,21 +15,14 @@ class PromotionService
         $this->promotionDAO = new PromotionDAO();
     }
 
-    public function getUserPromotions(int $userId): array
+    public function getDiscountByProductId(int $productId): float
     {
-        return $this->promotionDAO->findByUserId($userId);
-    }
-
-    public function applyPromotion(int $userId, int $productId): ?float
-    {
-        $promotions = $this->getUserPromotions($userId);
-
-        foreach ($promotions as $promotion) {
-            if ($promotion->productId === $productId) {
-                return $promotion->discountPercentage;
-            }
+        try {
+            $promotion = $this->promotionDAO->getPromotionByProductId($productId);
+            return $promotion ? $promotion->getDiscountPercentage() : 0;
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen promotie voor product $productId: " . $e->getMessage());
+            return 0;
         }
-
-        return null;
     }
 }

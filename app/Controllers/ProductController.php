@@ -4,6 +4,8 @@
 namespace app\Controllers;
 
 use app\Business\ProductService;
+use app\Helpers\SessionManager;
+use Exception;
 
 class ProductController
 {
@@ -12,22 +14,18 @@ class ProductController
     public function __construct()
     {
         $this->productService = new ProductService();
+        SessionManager::startSession();
     }
 
-    public function index(): void
+    public function index()
     {
-        $products = $this->productService->getAllProducts();
-        require __DIR__ . '/../../views/Product/menu.php';
-    }
-
-    public function details(int $id): void
-    {
-        $product = $this->productService->getProductById($id);
-        if (!$product) {
-            http_response_code(404);
-            echo "<h1>Product niet gevonden</h1>";
-            return;
+        try {
+            $products = $this->productService->getAllProducts();
+            require __DIR__ . '/../../views/Product/menu.php';
+        } catch (Exception $e) {
+            error_log("Fout bij laden producten: " . $e->getMessage());
+            header("Location: /ordering-pizza/home?error=Kan+menu+niet+laden");
+            exit;
         }
-        require __DIR__ . '/../../views/Product/details.php';
     }
 }

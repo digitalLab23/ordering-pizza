@@ -31,13 +31,11 @@ class User
         $this->phoneNumber = $data['PhoneNumber'] ?? null;
         $this->email = $data['Email'];
         $this->passwordHash = $data['PasswordHash'];
-        $this->promotionEligible = $data['PromotionEligible'] ?? false;
+        $this->promotionEligible = (bool) ($data['PromotionEligible'] ?? false);
         $this->remarks = $data['Remarks'] ?? null;
         $this->createdAt = $data['CreatedAt'];
     }
 
-
-    // Getter Methods
     public function getId(): int
     {
         return $this->id;
@@ -103,4 +101,3 @@ class User
         return $this->createdAt;
     }
 }
-?>

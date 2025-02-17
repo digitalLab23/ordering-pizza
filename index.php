@@ -5,14 +5,15 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Start de sessie
-session_start();
-
-// Autoload classes (Composer of custom autoloader)
+// Start de sessie via SessionManager
 require_once __DIR__ . '/vendor/autoload.php';
 
+use app\Helpers\SessionManager;
+
+SessionManager::startSession();
+
 // Gebruik namespaces
-use config\AppConfig;
+use app\Config\AppConfig;
 use app\Controllers\HomeController;
 use app\Controllers\ProductController;
 use app\Controllers\OrderController;
@@ -42,9 +43,24 @@ switch ($route) {
         $controller->cart();
         break;
 
+    case 'cart/add':
+        $controller = new OrderController();
+        $controller->addToCart();
+        break;
+
+    case (preg_match('/^cart\/remove\/(\d+)$/', $route, $matches) ? true : false):
+        $controller = new OrderController();
+        $controller->removeFromCart((int) $matches[1]);
+        break;
+
     case 'checkout':
         $controller = new OrderController();
         $controller->checkout();
+        break;
+
+    case 'order/confirm':
+        $controller = new OrderController();
+        $controller->confirmOrder();
         break;
 
     case 'user/login':
@@ -64,6 +80,7 @@ switch ($route) {
 
     default:
         http_response_code(404);
+        error_log("404: Route niet gevonden - " . $route);
         echo "<h1>404 - Pagina niet gevonden</h1>";
         break;
 }

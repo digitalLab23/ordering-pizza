@@ -6,6 +6,7 @@ namespace app\Data;
 use Config\DbConfig;
 use app\Models\Promotion;
 use PDO;
+use Exception;
 
 class PromotionDAO
 {
@@ -16,32 +17,18 @@ class PromotionDAO
         $this->connection = DbConfig::getInstance()->getConnection();
     }
 
-    public function findByUserId(int $userId): array
+    public function getPromotionByProductId(int $productId): ?Promotion
     {
-        $query = "SELECT * FROM Promotions WHERE UserID = :userId";
-        $statement = $this->connection->prepare($query);
-        $statement->execute(['userId' => $userId]);
-        $promotions = [];
+        try {
+            $query = "SELECT * FROM Promotions WHERE ProductID = :productId";
+            $statement = $this->connection->prepare($query);
+            $statement->execute(['productId' => $productId]);
+            $result = $statement->fetch();
 
-        while ($row = $statement->fetch()) {
-            $promotions[] = new Promotion($row);
+            return $result ? new Promotion($result) : null;
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen promotie voor product $productId: " . $e->getMessage());
+            return null;
         }
-
-        return $promotions;
-    }
-
-    public function create(Promotion $promotion): void
-    {
-        $query = "INSERT INTO Promotions (UserID, ProductID, DiscountPercentage, StartDate, EndDate)
-                  VALUES (:userId, :productId, :discountPercentage, :startDate, :endDate)";
-        $statement = $this->connection->prepare($query);
-
-        $statement->execute([
-            'userId' => $promotion->userId,
-            'productId' => $promotion->productId,
-            'discountPercentage' => $promotion->discountPercentage,
-            'startDate' => $promotion->startDate,
-            'endDate' => $promotion->endDate,
-        ]);
     }
 }

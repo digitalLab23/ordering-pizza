@@ -6,6 +6,7 @@ namespace app\Data;
 use Config\DbConfig;
 use app\Models\Product;
 use PDO;
+use Exception;
 
 class ProductDAO
 {
@@ -18,39 +19,36 @@ class ProductDAO
 
     public function findAll(): array
     {
-        $query = "SELECT * FROM Products";
-        $statement = $this->connection->query($query);
-        $products = [];
+        try {
+            $query = "SELECT * FROM Products";
+            $statement = $this->connection->query($query);
+            $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $products[] = new Product($row);
+            $products = [];
+            foreach ($results as $row) {
+                $products[] = new Product($row); 
+            }
+
+            return $products;
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen producten: " . $e->getMessage());
+            return [];
         }
-
-        return $products;
     }
+
 
     public function findById(int $id): ?Product
     {
-        $query = "SELECT * FROM Products WHERE ProductID = :id";
-        $statement = $this->connection->prepare($query);
-        $statement->execute(['id' => $id]);
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        try {
+            $query = "SELECT * FROM Products WHERE ProductID = :id";
+            $statement = $this->connection->prepare($query);
+            $statement->execute(['id' => $id]);
+            $result = $statement->fetch();
 
-        return $result ? new Product($result) : null;
-    }
-
-    public function create(Product $product): void
-    {
-        $query = "INSERT INTO Products (ProductName, Price, Composition, IsAvailable, PromotionPrice)
-                  VALUES (:name, :price, :composition, :isAvailable, :promotionPrice)";
-        $statement = $this->connection->prepare($query);
-
-        $statement->execute([
-            'name' => $product->name,
-            'price' => $product->price,
-            'composition' => $product->composition,
-            'isAvailable' => $product->isAvailable,
-            'promotionPrice' => $product->promotionPrice,
-        ]);
+            return $result ? new Product($result) : null;
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen product met ID $id: " . $e->getMessage());
+            return null;
+        }
     }
 }

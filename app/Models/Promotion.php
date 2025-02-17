@@ -5,20 +5,27 @@ namespace app\Models;
 
 class Promotion
 {
-    public int $id;
-    public int $userId;
-    public ?int $productId;
-    public float $discountPercentage;
-    public string $startDate;
-    public string $endDate;
+    private int $id;
+    private int $productId;
+    private float $discountPercentage;
 
     public function __construct(array $data)
     {
         $this->id = $data['PromotionID'] ?? 0;
-        $this->userId = $data['UserID'];
-        $this->productId = $data['ProductID'] ?? null;
+        $this->productId = $data['ProductID'];
         $this->discountPercentage = $data['DiscountPercentage'];
-        $this->startDate = $data['StartDate'];
-        $this->endDate = $data['EndDate'];
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+    public function getDiscountPercentage(): float
+    {
+        return $this->discountPercentage;
     }
 }

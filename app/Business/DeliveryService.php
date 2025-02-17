@@ -16,6 +16,11 @@ class DeliveryService
 
     public function isDeliveryAvailable(string $postalCode): bool
     {
-        return $this->deliveryAreaDAO->findByPostalCode($postalCode) !== null;
+        try {
+            return $this->deliveryAreaDAO->findByPostalCode($postalCode) !== null;
+        } catch (\Exception $e) {
+            error_log("Fout bij controleren bezorggebied: " . $e->getMessage());
+            return false;
+        }
     }
 }

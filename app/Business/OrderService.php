@@ -5,9 +5,7 @@ namespace app\Business;
 
 use app\Data\OrderDAO;
 use app\Data\OrderDetailDAO;
-use app\Helpers\PriceCalculator;
-use app\Models\Order;
-use app\Models\OrderDetail;
+use Exception;
 
 class OrderService
 {
@@ -19,36 +17,30 @@ class OrderService
         $this->orderDAO = new OrderDAO();
         $this->orderDetailDAO = new OrderDetailDAO();
     }
-
-    public function processOrder(array $orderData): void
+    public function placeOrder(string $name, string $address, string $postalCode, string $city, array $cart, float $cartTotal): ?int
     {
-        $cart = $_SESSION['cart'] ?? [];
-        if (empty($cart)) {
-            throw new \Exception("Winkelmandje is leeg!");
+        try {
+            if (empty($name) || empty($address) || empty($postalCode) || empty($city) || empty($cart)) {
+                throw new Exception("Bestelling niet voltooid: verplichte velden ontbreken.");
+            }
+
+            $orderId = $this->orderDAO->createOrder($name, $address, $postalCode, $city, $cartTotal);
+
+            if (!$orderId) {
+                throw new Exception("Order ID niet gegenereerd.");
+            }
+
+            foreach ($cart as $productId => $item) {
+                if (!isset($item['quantity'], $item['price'])) {
+                    throw new Exception("Onjuiste productgegevens voor product $productId.");
+                }
+                $this->orderDetailDAO->createOrderDetail($orderId, $productId, $item['quantity'], $item['price']);
+            }
+
+            return $orderId;
+        } catch (Exception $e) {
+            error_log("Fout bij bestelling plaatsen: " . $e->getMessage());
+            return null;
         }
-
-        $totalPrice = PriceCalculator::calculateTotal($cart);
-        $order = new Order([
-            'UserID' => $_SESSION['user_id'] ?? null,
-            'TotalPrice' => $totalPrice,
-            'DeliveryAddress' => $orderData['address'],
-            'DeliveryPostalCode' => $orderData['postal_code'],
-            'DeliveryCity' => $orderData['city'],
-            'DeliveryInstructions' => $orderData['instructions'] ?? null
-        ]);
-
-        $orderId = $this->orderDAO->create($order);
-
-        foreach ($cart as $productId => $quantity) {
-            $orderDetail = new OrderDetail([
-                'OrderID' => $orderId,
-                'ProductID' => $productId,
-                'Quantity' => $quantity,
-                'Price' => 10.00 // => Placeholder prijs, in productie haal je dit uit de database !!
-            ]);
-            $this->orderDetailDAO->create($orderDetail);
-        }
-
-        unset($_SESSION['cart']);
     }
 }

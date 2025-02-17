@@ -1,10 +1,9 @@
 <?php
 // views/User/login.php
 
-// Start de sessie als deze nog niet gestart is
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+use app\Helpers\SessionManager;
+
+SessionManager::startSession();
 
 // Check of de gebruiker al ingelogd is
 if (isset($_SESSION['user_id'])) {
@@ -15,10 +14,7 @@ if (isset($_SESSION['user_id'])) {
 // Haal fout- en succesberichten op
 $successMessage = $_SESSION['success'] ?? ($_GET['message'] ?? null);
 $errorMessage = $_SESSION['error'] ?? ($_GET['error'] ?? null);
-
-// Verwijder sessieberichten na weergave
-unset($_SESSION['success']);
-unset($_SESSION['error']);
+unset($_SESSION['success'], $_SESSION['error']);
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -28,6 +24,30 @@ unset($_SESSION['error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/ordering-pizza/public/css/style.css">
     <title>Login</title>
+    <style>
+        .error-message {
+            background: #ffcccc;
+            color: #d62828;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .input-error {
+            border: 2px solid #d62828;
+            background: #ffcccc;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,7 +61,6 @@ unset($_SESSION['error']);
             </div>
         <?php endif; ?>
 
-
         <?php if ($errorMessage): ?>
             <div class="error-message">
                 <?= htmlspecialchars($errorMessage) ?>
@@ -49,13 +68,14 @@ unset($_SESSION['error']);
         <?php endif; ?>
 
         <form action="/ordering-pizza/user/login" method="POST">
-            <label for="email">Email:</label>
+            <label for="email">E-mail:</label>
             <input
                 type="email"
                 id="email"
                 name="email"
-                placeholder="Voer je email in"
-                required>
+                placeholder="Voer je e-mail in"
+                required
+                class="<?= $errorMessage ? 'input-error' : '' ?>">
 
             <label for="password">Wachtwoord:</label>
             <input
@@ -63,7 +83,8 @@ unset($_SESSION['error']);
                 id="password"
                 name="password"
                 placeholder="Voer je wachtwoord in"
-                required>
+                required
+                class="<?= $errorMessage ? 'input-error' : '' ?>">
 
             <label>
                 <input type="checkbox" name="remember_me">
@@ -77,7 +98,7 @@ unset($_SESSION['error']);
 
         <p>
             Nog geen account?
-            <a href="register">Registreer hier</a>
+            <a href="/ordering-pizza/user/register">Registreer hier</a>
         </p>
 
         <a class="button back-home" href="/ordering-pizza/">Terug naar Home</a>

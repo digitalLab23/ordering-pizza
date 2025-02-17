@@ -6,6 +6,7 @@ namespace app\Data;
 use Config\DbConfig;
 use app\Models\Order;
 use PDO;
+use Exception;
 
 class OrderDAO
 {
@@ -18,42 +19,37 @@ class OrderDAO
 
     public function findById(int $id): ?Order
     {
-        $query = "SELECT * FROM Orders WHERE OrderID = :id";
-        $statement = $this->connection->prepare($query);
-        $statement->execute(['id' => $id]);
-        $result = $statement->fetch();
+        try {
+            $query = "SELECT * FROM Orders WHERE OrderID = :id";
+            $statement = $this->connection->prepare($query);
+            $statement->execute(['id' => $id]);
+            $result = $statement->fetch();
 
-        return $result ? new Order($result) : null;
-    }
-
-    public function findAll(): array
-    {
-        $query = "SELECT * FROM Orders";
-        $statement = $this->connection->query($query);
-        $orders = [];
-
-        while ($row = $statement->fetch()) {
-            $orders[] = new Order($row);
+            return $result ? new Order($result) : null;
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen bestelling ID $id: " . $e->getMessage());
+            return null;
         }
-
-        return $orders;
     }
 
-    public function create(Order $order): int
+    public function createOrder(string $name, string $address, string $postalCode, string $city, float $totalPrice): ?int
     {
-        $query = "INSERT INTO Orders (UserID, TotalPrice, DeliveryAddress, DeliveryPostalCode, DeliveryCity, DeliveryInstructions)
-                  VALUES (:userId, :totalPrice, :deliveryAddress, :deliveryPostalCode, :deliveryCity, :deliveryInstructions)";
-        $statement = $this->connection->prepare($query);
+        try {
+            $query = "INSERT INTO Orders (CustomerName, Address, PostalCode, City, TotalPrice, OrderDate) 
+                  VALUES (:name, :address, :postalCode, :city, :totalPrice, NOW())";
+            $statement = $this->connection->prepare($query);
+            $statement->execute([
+                'name' => $name,
+                'address' => $address,
+                'postalCode' => $postalCode,
+                'city' => $city,
+                'totalPrice' => $totalPrice
+            ]);
 
-        $statement->execute([
-            'userId' => $order->userId,
-            'totalPrice' => $order->totalPrice,
-            'deliveryAddress' => $order->deliveryAddress,
-            'deliveryPostalCode' => $order->deliveryPostalCode,
-            'deliveryCity' => $order->deliveryCity,
-            'deliveryInstructions' => $order->deliveryInstructions,
-        ]);
-
-        return (int) $this->connection->lastInsertId();
+            return (int) $this->connection->lastInsertId();
+        } catch (Exception $e) {
+            error_log("Fout bij het aanmaken van bestelling: " . $e->getMessage());
+            return null;
+        }
     }
 }

@@ -1,16 +1,13 @@
 <?php
 // views/home/index.php
 
-// Start de sessie als deze nog niet gestart is
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+use app\Helpers\SessionManager;
+
+SessionManager::startSession();
 
 // Controleren of de gebruiker is ingelogd
 $isLoggedIn = isset($_SESSION['user_id']);
 $successMessage = $_SESSION['success'] ?? null;
-
-// Zorg dat het succesbericht slechts één keer wordt getoond
 unset($_SESSION['success']);
 ?>
 <!DOCTYPE html>
@@ -35,7 +32,6 @@ unset($_SESSION['success']);
             </div>
         <?php endif; ?>
 
-
         <nav>
             <a class="button" href="/ordering-pizza/menu">Bekijk ons menu</a>
             <a class="button" href="/ordering-pizza/cart">Bekijk je winkelmandje</a>
@@ -47,8 +43,9 @@ unset($_SESSION['success']);
                 <a href="/ordering-pizza/user/login">Inloggen</a>
             </p>
         <?php else: ?>
-            <p>
-                Je bent ingelogd! | <a href="/ordering-pizza/user/logout">Uitloggen</a>
+            <p class="user-status">
+                Ingelogd als <strong><?= htmlspecialchars($_SESSION['user_name'] ?? 'klant') ?></strong> |
+                <a href="/ordering-pizza/user/logout">Uitloggen</a>
             </p>
         <?php endif; ?>
     </div>

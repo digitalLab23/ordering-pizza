@@ -5,6 +5,7 @@ namespace app\Business;
 
 use app\Data\ProductDAO;
 use app\Models\Product;
+use Exception;
 
 class ProductService
 {
@@ -20,14 +21,14 @@ class ProductService
         return $this->productDAO->findAll();
     }
 
+
     public function getProductById(int $id): ?Product
     {
-        return $this->productDAO->findById($id);
-    }
-
-    public function addProduct(array $data): void
-    {
-        $product = new Product($data);
-        $this->productDAO->create($product);
+        try {
+            return $this->productDAO->findById($id);
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen product met ID $id: " . $e->getMessage());
+            return null;
+        }
     }
 }

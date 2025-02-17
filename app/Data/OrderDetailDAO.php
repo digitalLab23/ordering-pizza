@@ -44,4 +44,17 @@ class OrderDetailDAO
             'remarks' => $orderDetail->remarks,
         ]);
     }
+
+    public function createOrderDetail(int $orderId, int $productId, int $quantity, float $price): void
+    {
+        $query = "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, Price)
+              VALUES (:orderId, :productId, :quantity, :price)";
+        $statement = $this->connection->prepare($query);
+        $statement->execute([
+            'orderId' => $orderId,
+            'productId' => $productId,
+            'quantity' => $quantity,
+            'price' => $price
+        ]);
+    }
 }
