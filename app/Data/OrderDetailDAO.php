@@ -6,6 +6,7 @@ namespace app\Data;
 use Config\DbConfig;
 use app\Models\OrderDetail;
 use PDO;
+use Exception;
 
 class OrderDetailDAO
 {
@@ -16,45 +17,20 @@ class OrderDetailDAO
         $this->connection = DbConfig::getInstance()->getConnection();
     }
 
-    public function findByOrderId(int $orderId): array
-    {
-        $query = "SELECT * FROM Order_Details WHERE OrderID = :orderId";
-        $statement = $this->connection->prepare($query);
-        $statement->execute(['orderId' => $orderId]);
-        $details = [];
-
-        while ($row = $statement->fetch()) {
-            $details[] = new OrderDetail($row);
-        }
-
-        return $details;
-    }
-
-    public function create(OrderDetail $orderDetail): void
-    {
-        $query = "INSERT INTO Order_Details (OrderID, ProductID, Quantity, Price, Remarks)
-                  VALUES (:orderId, :productId, :quantity, :price, :remarks)";
-        $statement = $this->connection->prepare($query);
-
-        $statement->execute([
-            'orderId' => $orderDetail->orderId,
-            'productId' => $orderDetail->productId,
-            'quantity' => $orderDetail->quantity,
-            'price' => $orderDetail->price,
-            'remarks' => $orderDetail->remarks,
-        ]);
-    }
-
     public function createOrderDetail(int $orderId, int $productId, int $quantity, float $price): void
     {
-        $query = "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, Price)
-              VALUES (:orderId, :productId, :quantity, :price)";
-        $statement = $this->connection->prepare($query);
-        $statement->execute([
-            'orderId' => $orderId,
-            'productId' => $productId,
-            'quantity' => $quantity,
-            'price' => $price
-        ]);
+        try {
+            $query = "INSERT INTO OrderDetails (OrderID, ProductID, Quantity, Price)
+                  VALUES (:orderId, :productId, :quantity, :price)";
+            $statement = $this->connection->prepare($query);
+            $statement->execute([
+                'orderId' => $orderId,
+                'productId' => $productId,
+                'quantity' => $quantity,
+                'price' => $price
+            ]);
+        } catch (Exception $e) {
+            error_log("Fout bij toevoegen van orderdetail: " . $e->getMessage());
+        }
     }
 }

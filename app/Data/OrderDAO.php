@@ -14,7 +14,12 @@ class OrderDAO
 
     public function __construct()
     {
-        $this->connection = DbConfig::getInstance()->getConnection();
+        try {
+            $this->connection = DbConfig::getInstance()->getConnection();
+        } catch (Exception $e) {
+            error_log("Fout bij databaseverbinding in OrderDAO: " . $e->getMessage());
+            throw new Exception("Databaseverbinding mislukt.");
+        }
     }
 
     public function findById(int $id): ?Order
@@ -23,7 +28,7 @@ class OrderDAO
             $query = "SELECT * FROM Orders WHERE OrderID = :id";
             $statement = $this->connection->prepare($query);
             $statement->execute(['id' => $id]);
-            $result = $statement->fetch();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
 
             return $result ? new Order($result) : null;
         } catch (Exception $e) {
@@ -36,7 +41,7 @@ class OrderDAO
     {
         try {
             $query = "INSERT INTO Orders (CustomerName, Address, PostalCode, City, TotalPrice, OrderDate) 
-                  VALUES (:name, :address, :postalCode, :city, :totalPrice, NOW())";
+                      VALUES (:name, :address, :postalCode, :city, :totalPrice, NOW())";
             $statement = $this->connection->prepare($query);
             $statement->execute([
                 'name' => $name,
@@ -46,10 +51,28 @@ class OrderDAO
                 'totalPrice' => $totalPrice
             ]);
 
-            return (int) $this->connection->lastInsertId();
+            $orderId = (int) $this->connection->lastInsertId();
+
+            if (!$orderId) {
+                throw new Exception("Order ID niet gegenereerd.");
+            }
+
+            return $orderId;
         } catch (Exception $e) {
-            error_log("Fout bij het aanmaken van bestelling: " . $e->getMessage());
+            error_log("Fout bij aanmaken bestelling: " . $e->getMessage());
             return null;
+        }
+    }
+
+    public function findAll(): array
+    {
+        try {
+            $query = "SELECT * FROM Orders ORDER BY OrderDate DESC";
+            $statement = $this->connection->query($query);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Fout bij ophalen van alle bestellingen: " . $e->getMessage());
+            return [];
         }
     }
 }

@@ -5,8 +5,9 @@ use app\Helpers\SessionManager;
 
 SessionManager::startSession();
 
-// Controleer of er producten in het winkelmandje zitten
-$cartTotal = $_SESSION['cart_total'] ?? 0;
+// Haal winkelwagen totaal op
+$cartTotal = $_SESSION['cart_total'] ?? 0.00;
+$cart = $_SESSION['cart'] ?? [];
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -15,6 +16,7 @@ $cartTotal = $_SESSION['cart_total'] ?? 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/ordering-pizza/public/css/style.css">
+    <script src="/ordering-pizza/public/js/cart.js" defer></script>
     <title>Menu</title>
     <style>
         .menu-container {
@@ -25,7 +27,7 @@ $cartTotal = $_SESSION['cart_total'] ?? 0;
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             margin-top: 20px;
             justify-items: center;
@@ -79,6 +81,27 @@ $cartTotal = $_SESSION['cart_total'] ?? 0;
         .button:hover {
             background-color: #d62828;
         }
+
+        .cart-summary {
+            position: relative;
+            display: inline-block;
+        }
+
+        .cart-preview {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            z-index: 100;
+            right: 0;
+        }
+
+        .cart-summary:hover .cart-preview {
+            display: block;
+        }
     </style>
 </head>
 
@@ -91,6 +114,19 @@ $cartTotal = $_SESSION['cart_total'] ?? 0;
             <a href="/ordering-pizza/cart" class="button">
                 Winkelwagen (€<?= number_format($cartTotal, 2, ',', '.') ?>)
             </a>
+            <div class="cart-preview">
+                <h3>Winkelwagen</h3>
+                <ul>
+                    <?php if (!empty($cart)): ?>
+                        <?php foreach ($cart as $productId => $item): ?>
+                            <li><?= htmlspecialchars($item['quantity']) ?>x <?= htmlspecialchars($item['name']) ?> -
+                                €<?= number_format($item['price'] * $item['quantity'], 2, ',', '.') ?></li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li>Winkelwagen is leeg</li>
+                    <?php endif; ?>
+                </ul>
+            </div>
         </div>
 
         <div class="menu-grid">

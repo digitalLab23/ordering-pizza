@@ -21,24 +21,20 @@ unset($_SESSION['success'], $_SESSION['error']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/ordering-pizza/public/css/style.css">
-    <title>Afrekenen</title>
+    <title>Leveringsgegevens</title>
 </head>
 
 <body>
 
     <div class="checkout-container">
-        <h1>Afrekenen</h1>
+        <h1>Leveringsgegevens</h1>
 
         <?php if ($successMessage): ?>
-            <div class="success-message">
-                <?= htmlspecialchars($successMessage) ?>
-            </div>
+            <div class="success-message"><?= htmlspecialchars($successMessage) ?></div>
         <?php endif; ?>
 
         <?php if ($errorMessage): ?>
-            <div class="error-message">
-                <?= htmlspecialchars($errorMessage) ?>
-            </div>
+            <div class="error-message"><?= htmlspecialchars($errorMessage) ?></div>
         <?php endif; ?>
 
         <?php if (empty($cart)): ?>
@@ -64,7 +60,7 @@ unset($_SESSION['success'], $_SESSION['error']);
 
             <form action="/ordering-pizza/order/confirm" method="POST">
                 <fieldset>
-                    <legend>Factuurgegevens</legend>
+                    <legend>Leveringsgegevens</legend>
                     <label for="name">Naam:</label>
                     <input type="text" id="name" name="name" required>
 
@@ -84,6 +80,8 @@ unset($_SESSION['success'], $_SESSION['error']);
                     <select id="payment_method" name="payment_method" required>
                         <option value="creditcard">Creditcard</option>
                         <option value="paypal">PayPal</option>
+                        <option value="cash">Cash</option>
+                        <option value="bank_transfer">Online overschrijving</option>
                     </select>
                 </fieldset>
 

@@ -3,8 +3,8 @@
 
 namespace app\Controllers;
 
-use app\Business\ProductService;
 use app\Business\OrderService;
+use app\Business\ProductService;
 use app\Helpers\SessionManager;
 use Exception;
 
@@ -84,44 +84,28 @@ class OrderController
     public function confirmOrder()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = trim($_POST['name'] ?? '');
-            $address = trim($_POST['address'] ?? '');
-            $postalCode = trim($_POST['postal_code'] ?? '');
-            $city = trim($_POST['city'] ?? '');
-            $paymentMethod = trim($_POST['payment_method'] ?? '');
-
-            if (empty($name) || empty($address) || empty($postalCode) || empty($city) || empty($paymentMethod)) {
-                $_SESSION['error'] = "Vul alle verplichte velden in.";
-                header("Location: /ordering-pizza/checkout");
-                exit;
-            }
+            $name = $_POST['name'] ?? 'Onbekende klant';
+            $address = $_POST['address'] ?? 'Geen adres opgegeven';
+            $postalCode = $_POST['postal_code'] ?? '0000';
+            $city = $_POST['city'] ?? 'Onbekend';
+            $paymentMethod = $_POST['payment_method'] ?? 'cash';
 
             $cart = $_SESSION['cart'] ?? [];
             $cartTotal = $_SESSION['cart_total'] ?? 0;
 
-            if (empty($cart)) {
-                $_SESSION['error'] = "Je winkelwagen is leeg.";
-                header("Location: /ordering-pizza/menu");
+            $orderId = $this->orderService->placeOrder($name, $address, $postalCode, $city, $cart, $cartTotal);
+
+            if ($orderId) {
+                unset($_SESSION['cart'], $_SESSION['cart_total']);
+                $_SESSION['success'] = "Je bestelling is succesvol geplaatst!";
+                header("Location: /ordering-pizza/confirmation");
                 exit;
             }
 
-            try {
-                $orderId = $this->orderService->placeOrder($name, $address, $postalCode, $city, $cart, $cartTotal);
-
-                if ($orderId) {
-                    unset($_SESSION['cart'], $_SESSION['cart_total']);
-                    $_SESSION['success'] = "Je bestelling is succesvol geplaatst!";
-                    header("Location: /ordering-pizza/confirmation");
-                    exit;
-                }
-
-                throw new Exception("Bestelling kon niet worden geplaatst.");
-            } catch (Exception $e) {
-                error_log("Fout bij bestelling plaatsen: " . $e->getMessage());
-                $_SESSION['error'] = "Bestelling mislukt. Probeer opnieuw.";
-                header("Location: /ordering-pizza/checkout");
-                exit;
-            }
+            error_log("Bestelling mislukt: geen order ID gegenereerd.");
+            $_SESSION['error'] = "Bestelling mislukt. Probeer opnieuw.";
+            header("Location: /ordering-pizza/checkout");
+            exit;
         } else {
             header("Location: /ordering-pizza/checkout");
             exit;
