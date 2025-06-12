@@ -1,6 +1,17 @@
 <?php
 // views/home/index.php
 
+error_reporting(E_ALL);
+// Serve static files (CSS/JS/images) directly if they exist
+$requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$staticFile = __DIR__ . $requestPath;
+if (file_exists($staticFile) && is_file($staticFile)) {
+    $mimeType = mime_content_type($staticFile);
+    header('Content-Type: ' . $mimeType);
+    readfile($staticFile);
+    exit;
+}
+
 use app\Helpers\SessionManager;
 
 SessionManager::startSession();
