@@ -22,7 +22,7 @@ unset($_SESSION['success'], $_SESSION['error']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/ordering-pizza/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/style.css">
     <title>Login</title>
     <style>
         .error-message {
