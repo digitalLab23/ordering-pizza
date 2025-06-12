@@ -5,14 +5,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Serve static files (CSS/JS/images) directly if they exist
-$publicPath = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-if (file_exists($publicPath) && !is_dir($publicPath)) {
-    $mimeType = mime_content_type($publicPath);
-    header('Content-Type: ' . $mimeType);
-    readfile($publicPath);
-    exit;
-}
 
 // Start de sessie via SessionManager
 require_once __DIR__ . '/vendor/autoload.php';
@@ -31,7 +23,19 @@ use app\Controllers\UserController;
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $baseUri = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
 $route = str_replace($baseUri, '', $requestUri);
+
 $route = trim($route, '/');
+
+// Serve static files under public directory
+if (strpos($route, 'public/') === 0) {
+    $publicPath = __DIR__ . '/' . $route;
+    if (file_exists($publicPath) && !is_dir($publicPath)) {
+        $mimeType = mime_content_type($publicPath);
+        header('Content-Type: ' . $mimeType);
+        readfile($publicPath);
+        exit;
+    }
+}
 
 // Routing
 switch ($route) {
